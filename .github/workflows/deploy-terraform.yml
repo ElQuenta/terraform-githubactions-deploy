@@ -1,7 +1,7 @@
 name: Deploy Terraform to AWS
 
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
 
 jobs:
   terraform:
@@ -21,6 +21,17 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.5.0 
+
+      - name: Generate RSA Key Pair
+        run: |
+          ssh-keygen -t rsa -b 4096 -f ./nginx-server.key -N "" 
+          # Store the public key as an artifact or secret if necessary
+          echo "Public key generated"
+      
+      - name: Upload SSH Key
+        run: |
+          echo "Public Key: $(cat ./nginx-server.key.pub)"
+      
       - name: Terraform Init
         run: terraform init
 
